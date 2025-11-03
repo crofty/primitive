@@ -4,7 +4,8 @@
             [primitive.image :as image]
             [primitive.model :as model])
   (:import [java.util Random]
-           [java.io File])
+           [java.io File]
+           [java.awt.image BufferedImage])
   (:gen-class))
 
 (def cli-options
@@ -92,11 +93,22 @@
                                                :rng rng
                                                :verbose verbose})
             result (run-model model count verbose)
-            final-image (image/scale-output (:current result) size)]
+            final-image (image/scale-output (:current result) size)
+            output-width (.getWidth ^BufferedImage final-image)
+            output-height (.getHeight ^BufferedImage final-image)]
         (doseq [path outputs]
           (let [formatted (if (str/includes? path "%")
                             (format path count)
                             path)]
             (ensure-output-dir! formatted)
-            (image/save-image final-image formatted)))))))
+            (let [ext (image/file-extension formatted)]
+              (if (= ext "svg")
+                (image/save-svg (:shapes result)
+                                (:background result)
+                                (:width result)
+                                (:height result)
+                                output-width
+                                output-height
+                                formatted)
+                (image/save-image final-image formatted)))))))))
 

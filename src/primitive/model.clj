@@ -25,6 +25,7 @@
       :current current
       :width width
       :height height
+      :background base
       :alpha alpha
       :samples samples
       :mutations mutations
@@ -32,7 +33,8 @@
       :score (image/mse target current)
       :verbose verbose
       :steps 0
-      :evaluations 0})))
+      :evaluations 0
+      :shapes []})))
 
 (defn- hill-climb [{:keys [mutations rng width height] :as state} initial]
   (loop [best initial
@@ -62,12 +64,16 @@
          evaluations 0]
     (if (= i samples)
       (if best
-        [(-> state
-             (assoc :current (:image best)
-                    :score (:score best))
-             (update :steps inc)
-             (update :evaluations + evaluations))
-         evaluations]
+        (let [updated (-> state
+                          (assoc :current (:image best)
+                                 :score (:score best))
+                          (update :steps inc)
+                          (update :evaluations + evaluations))
+              updated (if-let [shape (:shape best)]
+                        (update updated :shapes conj shape)
+                        updated)]
+          [updated
+           evaluations])
         [(-> state (update :steps inc) (update :evaluations + evaluations)) evaluations])
       (let [result (search-shape state)
             evaluations (if result (+ evaluations (:evaluations result)) evaluations)]

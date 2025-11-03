@@ -35,9 +35,11 @@ clojure -M:run -- -i input.png -o output.png -n 100
 The Clojure port currently supports triangle mode (`-m 1`). Other shape modes
 from the Go version are not yet implemented.
 
-Output images are written in PNG or JPEG format based on the file extension. If
-the output path contains a printf-style placeholder (e.g. `frame-%03d.png`),
-the final frame is saved using the provided iteration count.
+Output images are written in PNG, JPEG, or SVG format based on the file
+extension. SVG output saves the discovered triangles as vector polygons and
+honors the `--size` option by scaling the coordinates. If the output path
+contains a printf-style placeholder (e.g. `frame-%03d.png`), the final frame is
+saved using the provided iteration count.
 
 ## Development
 
