@@ -55,8 +55,14 @@
           (println (format "Step %d/%d score=%.6f" (inc i) count (:score next))))
         (recur (inc i) next)))))
 
+(defn sanitize-args [args]
+  (->> args
+       (remove #(= "--" %))
+       vec))
+
 (defn -main [& args]
-  (let [{:keys [options summary errors]} (cli/parse-opts args cli-options)
+  (let [args (sanitize-args args)
+        {:keys [options summary errors]} (cli/parse-opts args cli-options)
         {:keys [input output count mode alpha resize size background samples mutations seed verbose help]} options]
     (cond
       help (exit 0 (usage summary))
