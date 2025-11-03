@@ -94,7 +94,7 @@
     (when (and color (pos? (:count stats)))
       (let [candidate (image/copy-image current)]
         (draw! candidate p color alpha)
-        {:shape (assoc triangle :color color)
+        {:shape (assoc triangle :color color :alpha alpha)
          :image candidate
          :score (image/mse target candidate)}))))
 
