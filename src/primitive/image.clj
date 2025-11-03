@@ -125,12 +125,16 @@
     {:r r :g g :b b}))
 
 (defn save-image [^BufferedImage image path]
-  (let [lower (str/lower-case path)
+  (let [path-str (cond
+                   (instance? File path) (.getPath ^File path)
+                   (instance? java.nio.file.Path path) (str path)
+                   :else (str path))
+        lower (str/lower-case path-str)
         idx (.lastIndexOf lower ".")]
     (when (neg? idx)
       (throw (ex-info "Output file must have an extension" {:path path})))
     (let [ext (.substring lower (inc idx))
-          file (File. path)]
+          file (if (instance? File path) path (File. path-str))]
       (case ext
         ("png") (ImageIO/write image "png" file)
         ("jpg" "jpeg") (let [w (.getWidth image)

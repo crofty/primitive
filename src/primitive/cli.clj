@@ -40,10 +40,14 @@
   (System/exit status))
 
 (defn ensure-output-dir! [path]
-  (let [file (File. path)
-        parent (.getParentFile file)]
-    (when parent
-      (.mkdirs parent))))
+  (when path
+    (let [file (cond
+                 (instance? File path) path
+                 (instance? java.nio.file.Path path) (.toFile ^java.nio.file.Path path)
+                 :else (File. (str path)))
+          parent (.getParentFile ^File file)]
+      (when parent
+        (.mkdirs parent)))))
 
 (defn run-model [state count verbose]
   (loop [i 0
