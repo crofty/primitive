@@ -96,5 +96,5 @@
         (draw! candidate p color alpha)
         {:shape (assoc triangle :color color)
          :image candidate
-         :score (image/mse target candidate)})))
+         :score (image/mse target candidate)}))))
 

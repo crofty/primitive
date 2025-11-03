@@ -111,7 +111,7 @@
                             db (- ba bb)]
                         (recur (inc y)
                                (+ s (* dr dr) (* dg dg) (* db db))))))]
-          (recur (inc x) sum)))))
+          (recur (inc x) sum))))))
 
 (defn map->color [{:keys [r g b]}]
   (Color. ^int r ^int g ^int b))
@@ -158,4 +158,3 @@
 
 (defn composite [^Graphics2D g alpha]
   (.setComposite g (AlphaComposite/getInstance AlphaComposite/SRC_OVER (float (/ alpha 255.0)))))
-
